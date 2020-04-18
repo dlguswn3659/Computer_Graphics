@@ -1,6 +1,6 @@
-#include<Windows.h>
+#include <Windows.h>
 #include "gl/glut.h"
-#include<math.h>
+#include <math.h>
 
 void SetupRC(void);
 void ChangeSize(int w, int h);
@@ -19,7 +19,7 @@ GLfloat g_velocityX = 0.0005f;	//시간*속도 = 거리 에서 '속도'
 void init(void)
 {
 	//mouseLeftDown=false;
-
+	
 	point[0][0] = 0;
 	point[0][1] = 0;
 	point[1][0] = 0;
@@ -71,6 +71,38 @@ void RenderScene(void) {
 
 	glMatrixMode(GL_MODELVIEW);
 
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	GLfloat vertices[] = {
+		-0.8f, -0.8f, -0.8f,
+		0.8f, -0.8f, -0.8f,
+		0.8f, 0.8f, -0.8f,
+		-0.8f, 0.8f, -0.8f,
+		-0.8f, -0.8f, 0.8f,
+		0.8f, -0.8f, 0.8f,
+		0.8f, 0.8f, 0.8f,
+		-0.8f, 0.8f, 0.8f
+	};
+
+	GLubyte indices[] = {
+		7, 5, 6,
+		7, 4, 5,
+		3, 2, 1,
+		3, 1, 0,
+		2, 6, 5,
+		2, 5, 1,
+		3, 7, 6,
+		3, 6, 2,
+		0, 4, 7, 
+		0, 7, 3,
+		1, 5, 4,
+		1, 4, 0
+	};
+
+	glVertexPointer(3, GL_FLOAT, 0, vertices);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, indices);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
 	g_x += g_velocityX + (GLfloat)g_timeDelta / 10000.f;
 
 	//cycling start
@@ -79,12 +111,15 @@ void RenderScene(void) {
 		float cos_th = -0.3f * cos(theta * 3.14159 / 180.0);
 		float sin_th = 0.3f * sin(theta * 3.14159 / 180.0);
 
+		float sin_val = 0.5f * sin(theta * 3.14159 / 180.0);
+		float cos_val = 0.5f * cos(theta * 3.14159 / 180.0);
+
 		glColor3f(0.603922f, 0.803922f, 0.196078f);
 		glBegin(GL_POLYGON);
-			glVertex2f(cos_th - 1, sin_th + 1);
-			glVertex2f(-sin_th - 1, cos_th + 1);
-			glVertex2f(-cos_th - 1, -sin_th + 1);
-			glVertex2f(sin_th - 1, -cos_th + 1);
+			glVertex2f(cos_th - 1 + sin_val , sin_th + 1 + cos_val);
+			glVertex2f(-sin_th - 1 + sin_val, cos_th + 1 + cos_val);
+			glVertex2f(-cos_th - 1 + sin_val, -sin_th + 1 + cos_val);
+			glVertex2f(sin_th - 1 + sin_val, -cos_th + 1 + cos_val);
 	glEnd();
 
 	glPopMatrix();
@@ -152,7 +187,7 @@ int main(int argc, char* argv[]) {
 	glutInit(&argc, argv);
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-	glutCreateWindow("Lec04");
+	glutCreateWindow("Assignment01");
 
 	glutDisplayFunc(RenderScene);
 	glutIdleFunc(Idie);
