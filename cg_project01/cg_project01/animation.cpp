@@ -10,6 +10,7 @@ void timer(int value);
 
 static float point[2][2];
 static float theta;
+static float zoom_theta;
 
 GLfloat g_x = 0.f;
 int g_timeDelta = 0, g_prevTime = 0;
@@ -57,6 +58,10 @@ void timer(int value)
 	if (theta >= 360.0)
 		theta -= 360.0;
 
+	zoom_theta += 1.5;
+	if (360.0 >= theta && theta >= 180.0)
+		zoom_theta -= 3.0;
+
 	glutTimerFunc(1000 / 30, timer, 1);
 	glutPostRedisplay();
 }
@@ -68,51 +73,57 @@ void RenderScene(void) {
 
 	g_x += g_velocityX + (GLfloat)g_timeDelta / 10000.f;
 
-	glPushMatrix();
-		glColor3f(1.0f, 0.0f, 0.0f);
-
-		glTranslatef(g_x, 0.0f, 0.0f);
-
-		glBegin(GL_QUADS);
-			glVertex3f(0.2f, 0.2f, 0.0f);
-			glVertex3f(-0.2f, 0.2f, 0.0f);
-			glVertex3f(-0.2f, -0.2f, 0.0f);
-			glVertex3f(0.2f, -0.2f, 0.0f);
-		glEnd();
-
-	glPopMatrix();
+	//cycling start
 
 	glPushMatrix();
-	glColor3f(0.0f, 1.0f, 0.0f);
+		float cos_th = -0.3f * cos(theta * 3.14159 / 180.0);
+		float sin_th = 0.3f * sin(theta * 3.14159 / 180.0);
 
-	glTranslatef(g_x, 0.0f, 0.0f);
-
-	glBegin(GL_QUADS);
-	glVertex3f(0.2f, 0.6f, 0.0f);
-	glVertex3f(-0.2f, 0.6f, 0.0f);
-	glVertex3f(-0.2f, 0.2f, 0.0f);
-	glVertex3f(0.2f, 0.2f, 0.0f);
+		glColor3f(0.603922f, 0.803922f, 0.196078f);
+		glBegin(GL_POLYGON);
+			glVertex2f(cos_th - 1, sin_th + 1);
+			glVertex2f(-sin_th - 1, cos_th + 1);
+			glVertex2f(-cos_th - 1, -sin_th + 1);
+			glVertex2f(sin_th - 1, -cos_th + 1);
 	glEnd();
 
 	glPopMatrix();
+
+	//cycling end
+
+	//zoom in out start
+
+	glPushMatrix();
+	float plus = zoom_theta*0.002f + 0.3f;
+	float minus = -zoom_theta*0.002f - 0.3f;
+
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glBegin(GL_POLYGON);
+	glVertex2f(plus + 1, plus + 1);
+	glVertex2f(minus + 1, plus + 1);
+	glVertex2f(minus + 1, minus + 1);
+	glVertex2f(plus + 1, minus + 1);
+	glEnd();
+
+	glPopMatrix();
+
+	//zoom in out end
 	
 	//rotation start
 
 
 	glPushMatrix();
-	glColor3f(1.0f, 0.0f, 0.0f);
-
 	//glTranslatef(g_x, 0.0f, 0.0f);
 
-	float cos_th = 0.3f*cos(theta * 3.14159 / 180.0);
-	float sin_th = 0.3f*sin(theta * 3.14159 / 180.0);
+	/*float cos_th = -0.3f*cos(theta * 3.14159 / 180.0);
+	float sin_th = 0.3f*sin(theta * 3.14159 / 180.0);*/
 
-	glColor3f(1, 0, 0);
+	glColor3f(1.0f, 0.6f, 0.0f);
 	glBegin(GL_POLYGON);
-	glVertex2f(cos_th, sin_th);
-	glVertex2f(-sin_th, cos_th);
-	glVertex2f(-cos_th, -sin_th);
-	glVertex2f(sin_th, -cos_th);
+	glVertex2f(cos_th + 1, sin_th -1);
+	glVertex2f(-sin_th + 1, cos_th -1);
+	glVertex2f(-cos_th + 1, -sin_th -1);
+	glVertex2f(sin_th + 1, -cos_th -1);
 	glEnd();
 
 	glPopMatrix();
@@ -127,7 +138,7 @@ void RenderScene(void) {
 }
 
 void SetupRC(void) {
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void Idie() {
