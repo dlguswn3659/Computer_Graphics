@@ -1,0 +1,3 @@
+﻿  culling.cpp
+C:\Users\L\source\repos\culling\culling\culling.cpp(94,9): warning C4477: 'printf' : 서식 문자열 '%f'에 'double' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'GLint'입니다.
+  culling.vcxproj -> C:\Users\L\source\repos\culling\Debug\culling.exe
