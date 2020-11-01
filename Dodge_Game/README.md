@@ -1,2 +1,2 @@
 # Dodge game
-docx 파일을 
+docx 문서를 참조하십시오.
