@@ -1,33 +1,33 @@
 /*****************************************************************************************************
 Class		: Computer Graphics
-Proj Name	: Å°º¸µå/¸¶¿ì½º ÀÔ·ÂÀ» ÅëÇÑ È­¸é º¯°æ
-Student Name: ÀÌÇöÁÖ
+Proj Name	: í‚¤ë³´ë“œ/ë§ˆìš°ìŠ¤ ì…ë ¥ì„ í†µí•œ í™”ë©´ ë³€ê²½
+Student Name: ì´í˜„ì£¼
 Student #	: 20184060
 Due Date	: 20.05.03
 ******************************************************************************************************/
 
-#include <Windows.h>				//Windows Çì´õÆÄÀÏ
+#include <Windows.h>				//Windows í—¤ë”íŒŒì¼
 #include "gl/glut.h"
 #include <stdio.h>
-#include "gl/glut.h"				//openGL Çì´õÆÄÀÏ
-#include <math.h>					//sin, cosÇÔ¼ö¸¦ ¾²±â À§ÇÑ Çì´õÆÄÀÏ
+#include "gl/glut.h"				//openGL í—¤ë”íŒŒì¼
+#include <math.h>					//sin, cosí•¨ìˆ˜ë¥¼ ì“°ê¸° ìœ„í•œ í—¤ë”íŒŒì¼
 #define CCW	0
-#define CW	1
+#define CW	1 
 
-void SetupRC(void);					//background color ÁöÁ¤
-void RenderScene(void);				//Å¥ºê »ı¼º ¹× glulookat º¯°æ
-void ReduceToUnit(float vector[3]);	//´ÜÀ§º¤ÅÍ·Î ¹Ù²ãÁÖ´Â ¸Ş¼Òµå
-void calcNormal(float v[3][3], float out[3]);	//normal vector °è»ê ¸Ş¼Òµå
-float InnerProduct(float v[3], float n[3]);		//³»Àû °è»ê °á°ú ¹İÈ¯ ¸Ş¼Òµå
+void SetupRC(void);					//background color ì§€ì •
+void RenderScene(void);				//íë¸Œ ìƒì„± ë° glulookat ë³€ê²½
+void ReduceToUnit(float vector[3]);	//ë‹¨ìœ„ë²¡í„°ë¡œ ë°”ê¿”ì£¼ëŠ” ë©”ì†Œë“œ
+void calcNormal(float v[3][3], float out[3]);	//normal vector ê³„ì‚° ë©”ì†Œë“œ
+float InnerProduct(float v[3], float n[3]);		//ë‚´ì  ê³„ì‚° ê²°ê³¼ ë°˜í™˜ ë©”ì†Œë“œ
 
-GLfloat my_triangle1[3][3] = { -10.f, 0.f, 0.f, 10.f, 0.f, 0.f, 0.f, 10.f, 0.f };	//»ï°¢Çü ¾Õ¸é
-GLfloat my_triangle2[3][3] = { 10.f, 0.f, 0.f, -10.f, 0.f, 0.f, 0.f, 10.f, 0.f };	//»ï°¢Çü µŞ¸é
-GLfloat faceNorm[3];																//¹ı¼±º¤ÅÍ
-GLfloat eyeVec[3] = { 0.f, 0.f, -80.0f };											//gluLookAt¿¡¼­ eyeview vector
-GLint culling = 0;																	//0ÀÌ¸é CCW, 1ÀÌ¸é CW
-GLfloat inner_product;																//³»Àû °á°ú º¯¼ö
+GLfloat my_triangle1[3][3] = { -10.f, 0.f, 0.f, 10.f, 0.f, 0.f, 0.f, 10.f, 0.f };	//ì‚¼ê°í˜• ì•ë©´
+GLfloat my_triangle2[3][3] = { 10.f, 0.f, 0.f, -10.f, 0.f, 0.f, 0.f, 10.f, 0.f };	//ì‚¼ê°í˜• ë’·ë©´
+GLfloat faceNorm[3];																//ë²•ì„ ë²¡í„°
+GLfloat eyeVec[3] = { 0.f, 0.f, -80.0f };											//gluLookAtì—ì„œ eyeview vector
+GLint culling = 0;																	//0ì´ë©´ CCW, 1ì´ë©´ CW
+GLfloat inner_product;																//ë‚´ì  ê²°ê³¼ ë³€ìˆ˜
 
-void ReduceToUnit(float vector[3]) {												//´ÜÀ§º¤ÅÍ·Î ¹Ù²ãÁÖ´Â ¸Ş¼Òµå
+void ReduceToUnit(float vector[3]) {												//ë‹¨ìœ„ë²¡í„°ë¡œ ë°”ê¿”ì£¼ëŠ” ë©”ì†Œë“œ
 	float length;
 
 	length = (float)sqrt((vector[0] * vector[0]) + (vector[1] * vector[1]) + (vector[2] * vector[2]));
@@ -39,13 +39,13 @@ void ReduceToUnit(float vector[3]) {												//´ÜÀ§º¤ÅÍ·Î ¹Ù²ãÁÖ´Â ¸Ş¼Òµå
 	vector[2] /= length;
 }
 
-void calcNormal(float v[3][3], float out[3]) {										//normal vector °è»ê ¸Ş¼Òµå
+void calcNormal(float v[3][3], float out[3]) {										//normal vector ê³„ì‚° ë©”ì†Œë“œ
 	float v1[3], v2[3];
 	static const int x = 0;
 	static const int y = 1;
 	static const int z = 2;
 
-	// ¼¼ Á¡À¸·Î ºÎÅÍ µÎ °³ÀÇ º¤ÅÍ¸¦ ±¸ÇÔ
+	// ì„¸ ì ìœ¼ë¡œ ë¶€í„° ë‘ ê°œì˜ ë²¡í„°ë¥¼ êµ¬í•¨
 	v1[x] = v[0][x] - v[1][x];
 	v1[y] = v[0][y] - v[1][y];
 	v1[z] = v[0][z] - v[1][z];
@@ -54,16 +54,16 @@ void calcNormal(float v[3][3], float out[3]) {										//normal vector °è»ê ¸Ş¼
 	v2[y] = v[1][y] - v[2][y];
 	v2[z] = v[1][z] - v[2][z];
 
-	// out[]¿¡ normal vector¸¦ ÀúÀåÇÑ´Ù.
+	// out[]ì— normal vectorë¥¼ ì €ì¥í•œë‹¤.
 	out[x] = v1[y] * v2[z] - v1[z] * v2[y];
 	out[y] = v1[z] * v2[x] - v1[x] * v2[z];
 	out[z] = v1[x] * v2[y] - v1[y] * v2[x];
 
-	// vector¸¦ normalizeÇÏ±â (0~1·Î ¹Ù²ãÁÖ±â)
+	// vectorë¥¼ normalizeí•˜ê¸° (0~1ë¡œ ë°”ê¿”ì£¼ê¸°)
 	ReduceToUnit(out);
 }
 
-float InnerProduct(float v[3], float n[3]) {										//³»Àû °è»ê °á°ú ¹İÈ¯ ¸Ş¼Òµå
+float InnerProduct(float v[3], float n[3]) {										//ë‚´ì  ê³„ì‚° ê²°ê³¼ ë°˜í™˜ ë©”ì†Œë“œ
 	float result;
 	result = (v[0] * n[0]) + (v[1] * n[1]) + (v[2] * n[2]);
 	return result;
@@ -81,7 +81,7 @@ void RenderScene(void) {
 
 	inner_product = InnerProduct(eyeVec, faceNorm);
 
-	//¸éÀÇ ¹ı¼±º¤ÅÍ(N)°ú view vector°¡ ÀÌ·ç´Â °¢ÀÌ 90µµ°¡ ³ÑÀ¸¸é CW, Áï, V³»ÀûN < 0ÀÎ ¸éÀº viewer·Î ºÎÅÍ CWÀÌ´Ù.
+	//ë©´ì˜ ë²•ì„ ë²¡í„°(N)ê³¼ view vectorê°€ ì´ë£¨ëŠ” ê°ì´ 90ë„ê°€ ë„˜ìœ¼ë©´ CW, ì¦‰, Vë‚´ì N < 0ì¸ ë©´ì€ viewerë¡œ ë¶€í„° CWì´ë‹¤.
 	/*if (inner_product < 0.0) {
 		culling = CW;
 	}
@@ -135,24 +135,24 @@ void ChangeSize(GLsizei w, GLsizei h) {
 	gluPerspective(90.f, aspectRatio, 10.f, 200.f);
 }
 
-//Å°º¸µå ¹öÆ°¿¡ µû¸¥ handler
+//í‚¤ë³´ë“œ ë²„íŠ¼ì— ë”°ë¥¸ handler
 void MenuHandler(unsigned char key, int x, int y) {
-	if (key == 'A' || key == 'a') {							//AÅ°¸¦ ´©¸£¸é
-		glClearColor(1.f, 0.f, 0.f, 1.f);					//¹è°æ »öÀ» »¡°£»ö
+	if (key == 'A' || key == 'a') {							//Aí‚¤ë¥¼ ëˆ„ë¥´ë©´
+		glClearColor(1.f, 0.f, 0.f, 1.f);					//ë°°ê²½ ìƒ‰ì„ ë¹¨ê°„ìƒ‰
 	}
-	if (key == 'B' || key == 'b') {							//BÅ°¸¦ ´©¸£¸é
-		glClearColor(0.f, 0.f, 1.f, 1.f);					//¹è°æ »öÀ» ÆÄ¶õ»ö
+	if (key == 'B' || key == 'b') {							//Bí‚¤ë¥¼ ëˆ„ë¥´ë©´
+		glClearColor(0.f, 0.f, 1.f, 1.f);					//ë°°ê²½ ìƒ‰ì„ íŒŒë€ìƒ‰
 	}
 	glutPostRedisplay();
 }
 
-//¸¶¿ì½º Å¬¸¯¿¡ µû¸¥ handler
+//ë§ˆìš°ìŠ¤ í´ë¦­ì— ë”°ë¥¸ handler
 void MenuHandler2(int button, int state, int x, int y) {
 	if (button == GLUT_LEFT_BUTTON) {
-		if (state == GLUT_DOWN)								//´©¸¥ »óÅÂ¿¡¼±
-			culling = CW;									//cw¸¦ º¸ÀÌµµ·Ï »óÅÂº¯È¯
-		if (state == GLUT_UP)								//¶¾ »óÅÂ¿¡¼±
-			culling = CCW;									//ccw¸¦ º¸ÀÌµµ·Ï »óÅÂº¯È¯
+		if (state == GLUT_DOWN)								//ëˆ„ë¥¸ ìƒíƒœì—ì„ 
+			culling = CW;									//cwë¥¼ ë³´ì´ë„ë¡ ìƒíƒœë³€í™˜
+		if (state == GLUT_UP)								//ë—€ ìƒíƒœì—ì„ 
+			culling = CCW;									//ccwë¥¼ ë³´ì´ë„ë¡ ìƒíƒœë³€í™˜
 	}
 	glutPostRedisplay();
 }
